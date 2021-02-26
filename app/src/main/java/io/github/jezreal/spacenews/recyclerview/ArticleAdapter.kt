@@ -9,7 +9,8 @@ import com.bumptech.glide.Glide
 import io.github.jezreal.spacenews.databinding.ArticleItemBinding
 import io.github.jezreal.spacenews.models.Article
 
-class ArticleAdapter : ListAdapter<Article, ArticleAdapter.ViewHolder>(ArticleDiffCallback()) {
+class ArticleAdapter(private val onclick: (Article) -> Unit) :
+    ListAdapter<Article, ArticleAdapter.ViewHolder>(ArticleDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -17,18 +18,22 @@ class ArticleAdapter : ListAdapter<Article, ArticleAdapter.ViewHolder>(ArticleDi
 
     override fun onBindViewHolder(holder: ViewHolder, position: Int) {
         val item = getItem(position)
-        holder.bind(item)
+        holder.bind(item, onclick)
     }
 
-    class ViewHolder private constructor(private val binding: ArticleItemBinding) :
-        RecyclerView.ViewHolder(binding.root) {
+    class ViewHolder private constructor(
+        private val binding: ArticleItemBinding,
+    ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Article) {
+        fun bind(item: Article, onclick: (Article) -> Unit) {
             binding.articleTitle.text = item.title
             binding.articleSummary.text = item.summary
             Glide.with(binding.root)
                 .load(item.imageUrl)
                 .into(binding.articleImage)
+            binding.root.setOnClickListener {
+                onclick(item)
+            }
         }
 
         companion object {
