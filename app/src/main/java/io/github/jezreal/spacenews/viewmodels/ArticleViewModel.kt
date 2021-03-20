@@ -7,9 +7,12 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jezreal.spacenews.models.Article
 import io.github.jezreal.spacenews.repository.ArticleRepository
+import io.github.jezreal.spacenews.viewmodels.ArticleViewModel.ArticleEvent.LoadUrl
 import io.github.jezreal.spacenews.wrappers.Resource
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,13 +25,16 @@ class ArticleViewModel @Inject constructor(
     private val _articleList = MutableStateFlow<ArticleState>(ArticleState.Empty)
     val articleList: LiveData<ArticleState> = _articleList.asLiveData()
 
+    private val _articleEvent = Channel<ArticleEvent>()
+    val articleEvent = _articleEvent.receiveAsFlow()
+
     fun getArticles() {
         _articleList.value = ArticleState.Loading
 
         viewModelScope.launch(Dispatchers.Default) {
             when (val articleResponse = repository.getArticleList()) {
                 is Resource.Success -> {
-                    _articleList.value = ArticleState.Sucess(articleResponse.data!!)
+                    _articleList.value = ArticleState.Success(articleResponse.data!!)
                 }
                 is Resource.Error -> {
                     _articleList.value = ArticleState.Error(articleResponse.message!!)
@@ -37,11 +43,22 @@ class ArticleViewModel @Inject constructor(
         }
     }
 
+    fun loadUrl(url: String) {
+        viewModelScope.launch {
+            _articleEvent.send(LoadUrl(url))
+        }
+    }
+
     sealed class ArticleState {
         object Empty : ArticleState()
         object Loading : ArticleState()
-        class Sucess(val articles: List<Article>) : ArticleState()
+        class Success(val articles: List<Article>) : ArticleState()
         class Error(val message: String) : ArticleState()
+    }
+
+    sealed class ArticleEvent {
+        class ShowSnackBar(val message: String) : ArticleEvent()
+        class LoadUrl(val url: String) : ArticleEvent()
     }
 
 }
