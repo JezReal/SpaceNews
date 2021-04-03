@@ -30,6 +30,4 @@ object AppModule {
     @Provides
     fun provideArticleRepository(api: SpaceflightNewsApi): ArticleRepository =
         ArticleRepository(api)
-
-
 }
