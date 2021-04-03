@@ -1,12 +1,12 @@
 package io.github.jezreal.spacenews.views
 
-import android.annotation.SuppressLint
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.webkit.WebView
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -27,13 +27,13 @@ class ArticleListFragment : Fragment() {
 
     private lateinit var binding: FragmentArticleListBinding
     private val viewModel: ArticleViewModel by viewModels()
+    private lateinit var adapter: ArticleAdapter
 
-    @SuppressLint("SetJavaScriptEnabled")
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         binding = FragmentArticleListBinding.inflate(inflater, container, false)
 
         viewModel.articleList.observe(viewLifecycleOwner) { articleState ->
@@ -49,7 +49,7 @@ class ArticleListFragment : Fragment() {
                 is Success -> {
                     binding.loading.visibility = View.GONE
                     binding.recyclerView.visibility = View.VISIBLE
-                    val adapter = ArticleAdapter { article ->
+                    adapter = ArticleAdapter { article ->
                         adapterOnClick(article)
                     }
                     binding.recyclerView.adapter = adapter
@@ -88,7 +88,9 @@ class ArticleListFragment : Fragment() {
     }
 
     private fun adapterOnClick(article: Article) {
-        viewModel.loadUrl(article.url)
+        val uri = Uri.parse(article.url)
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        requireActivity().startActivity(intent)
     }
 
 }
