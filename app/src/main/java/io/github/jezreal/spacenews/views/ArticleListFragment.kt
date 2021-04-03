@@ -10,14 +10,12 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jezreal.spacenews.databinding.FragmentArticleListBinding
 import io.github.jezreal.spacenews.models.Article
 import io.github.jezreal.spacenews.recyclerview.ArticleAdapter
 import io.github.jezreal.spacenews.viewmodels.ArticleViewModel
-import io.github.jezreal.spacenews.viewmodels.ArticleViewModel.ArticleEvent.LoadUrl
 import io.github.jezreal.spacenews.viewmodels.ArticleViewModel.ArticleEvent.ShowSnackBar
 import io.github.jezreal.spacenews.viewmodels.ArticleViewModel.ArticleState.*
 import kotlinx.coroutines.flow.collect
@@ -70,13 +68,6 @@ class ArticleListFragment : Fragment() {
                     is ShowSnackBar -> {
                         Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG).show()
                         Log.d("ArticleListFragment", "vent collected")
-                    }
-                    is LoadUrl -> {
-                        findNavController().navigate(
-                            ArticleListFragmentDirections.actionArticleListFragmentToArticleFragment(
-                                event.url
-                            )
-                        )
                     }
                 }
             }

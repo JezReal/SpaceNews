@@ -7,7 +7,6 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jezreal.spacenews.models.Article
 import io.github.jezreal.spacenews.repository.ArticleRepository
-import io.github.jezreal.spacenews.viewmodels.ArticleViewModel.ArticleEvent.LoadUrl
 import io.github.jezreal.spacenews.wrappers.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -53,7 +52,6 @@ class ArticleViewModel @Inject constructor(
 
     sealed class ArticleEvent {
         class ShowSnackBar(val message: String) : ArticleEvent()
-        class LoadUrl(val url: String) : ArticleEvent()
     }
 
 }
