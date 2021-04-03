@@ -43,11 +43,6 @@ class ArticleViewModel @Inject constructor(
         }
     }
 
-    fun loadUrl(url: String) {
-        viewModelScope.launch {
-            _articleEvent.send(LoadUrl(url))
-        }
-    }
 
     sealed class ArticleState {
         object Empty : ArticleState()
