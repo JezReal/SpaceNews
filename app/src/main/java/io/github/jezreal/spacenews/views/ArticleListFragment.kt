@@ -56,8 +56,7 @@ class ArticleListFragment : Fragment() {
 
                 is Error -> {
                     binding.loading.visibility = View.GONE
-                    binding.errorMessage.visibility = View.VISIBLE
-                    binding.errorMessage.text = articleState.message
+                    Snackbar.make(binding.root, articleState.message, Snackbar.LENGTH_SHORT).show()
                 }
             }
         }

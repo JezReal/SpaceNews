@@ -2,9 +2,8 @@ package io.github.jezreal.spacenews.repository
 
 import io.github.jezreal.spacenews.models.Article
 import io.github.jezreal.spacenews.network.SpaceflightNewsApi
-import io.github.jezreal.spacenews.viewmodels.ArticleViewModel
 import io.github.jezreal.spacenews.wrappers.Resource
-import java.lang.Exception
+import java.net.UnknownHostException
 import javax.inject.Inject
 
 class ArticleRepository @Inject constructor(
@@ -21,8 +20,12 @@ class ArticleRepository @Inject constructor(
             } else {
                 Resource.Error(response.message())
             }
-        } catch (e: Exception) {
-            Resource.Error(e.stackTraceToString())
+        } catch (e: UnknownHostException) {
+            Resource.Error("No internet")
+        }
+
+        catch (e: Exception) {
+            Resource.Error(e.message!!)
         }
     }
 }
