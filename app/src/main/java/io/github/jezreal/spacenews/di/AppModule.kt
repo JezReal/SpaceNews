@@ -10,7 +10,6 @@ import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import javax.inject.Singleton
 
-private const val BASE_URL = "https://spaceflightnewsapi.net/"
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -20,7 +19,7 @@ object AppModule {
     @Provides
     fun provideSpaceflightNewsApi(): SpaceflightNewsApi {
         return Retrofit.Builder()
-            .baseUrl(BASE_URL)
+            .baseUrl(SpaceflightNewsApi.BASE_URL)
             .addConverterFactory(MoshiConverterFactory.create())
             .build()
             .create(SpaceflightNewsApi::class.java)
