@@ -6,7 +6,9 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
+import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import io.github.jezreal.spacenews.databinding.ArticleItemBinding
+import io.github.jezreal.spacenews.databinding.ArticleItemCardBinding
 import io.github.jezreal.spacenews.models.Article
 
 class ArticleAdapter(private val onclick: (Article) -> Unit) :
@@ -22,7 +24,7 @@ class ArticleAdapter(private val onclick: (Article) -> Unit) :
     }
 
     class ViewHolder private constructor(
-        private val binding: ArticleItemBinding,
+        private val binding: ArticleItemCardBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: Article, onclick: (Article) -> Unit) {
@@ -30,7 +32,9 @@ class ArticleAdapter(private val onclick: (Article) -> Unit) :
             binding.articleSummary.text = item.summary
             Glide.with(binding.root)
                 .load(item.imageUrl)
+                .transition(DrawableTransitionOptions.withCrossFade())
                 .into(binding.articleImage)
+
             binding.root.setOnClickListener {
                 onclick(item)
             }
@@ -39,7 +43,7 @@ class ArticleAdapter(private val onclick: (Article) -> Unit) :
         companion object {
             fun from(parent: ViewGroup): ViewHolder {
                 val layoutInflater = LayoutInflater.from(parent.context)
-                val binding = ArticleItemBinding.inflate(layoutInflater, parent, false)
+                val binding = ArticleItemCardBinding.inflate(layoutInflater, parent, false)
 
                 return ViewHolder(binding)
             }
