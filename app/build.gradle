@@ -94,6 +94,9 @@ dependencies {
 
     //Browser for custom tabs
     implementation "androidx.browser:browser:$browser_version"
+
+    //Swipe to refresh
+    implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 }
 
 kapt {
