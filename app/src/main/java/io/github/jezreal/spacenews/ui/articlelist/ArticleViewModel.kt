@@ -5,6 +5,7 @@ import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jezreal.spacenews.network.Article
 import io.github.jezreal.spacenews.repository.ArticleRepository
+import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleEvent.*
 import io.github.jezreal.spacenews.wrappers.Resource
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
@@ -41,10 +42,32 @@ class ArticleViewModel @Inject constructor(
         }
     }
 
+    fun refreshArticles() {
+        _articleList.value = ArticleState.Refresh
+
+        viewModelScope.launch(Dispatchers.Default) {
+            when (val articleResponse = repository.getArticleList()) {
+                is Resource.Success -> {
+                    _articleList.value = ArticleState.Success(articleResponse.data!!)
+                }
+                is Resource.Error -> {
+                    _articleList.value = ArticleState.Error(articleResponse.message!!)
+                }
+            }
+        }
+    }
+
+    fun showSnackBar(message: String) {
+        viewModelScope.launch {
+            _articleEvent.send(ShowSnackBar(message))
+        }
+    }
+
 
     sealed class ArticleState {
         object Empty : ArticleState()
         object Loading : ArticleState()
+        object Refresh : ArticleState()
         class Success(val articles: List<Article>) : ArticleState()
         class Error(val message: String) : ArticleState()
     }

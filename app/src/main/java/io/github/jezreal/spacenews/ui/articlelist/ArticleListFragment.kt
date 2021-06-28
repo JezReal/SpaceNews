@@ -53,6 +53,12 @@ class ArticleListFragment : Fragment() {
                                 binding.loading.visibility = View.VISIBLE
                             }
 
+                            is Refresh -> {
+                                binding.recyclerView.visibility = View.VISIBLE
+                                binding.loading.visibility = View.GONE
+                                binding.errorMessage.visibility = View.GONE
+                            }
+
                             is Success -> {
                                 binding.loading.visibility = View.GONE
                                 binding.recyclerView.visibility = View.VISIBLE
@@ -61,12 +67,15 @@ class ArticleListFragment : Fragment() {
                                 }
                                 binding.recyclerView.adapter = adapter
                                 adapter.submitList(state.articles)
+
+                                binding.swipeToRefresh.isRefreshing = false
                             }
 
                             is Error -> {
                                 binding.loading.visibility = View.GONE
-                                Snackbar.make(binding.root, state.message, Snackbar.LENGTH_SHORT)
-                                    .show()
+                                viewModel.showSnackBar(state.message)
+
+                                binding.swipeToRefresh.isRefreshing = false
                             }
                         }
                     }
@@ -77,7 +86,7 @@ class ArticleListFragment : Fragment() {
                     viewModel.articleEvent.collect { event ->
                         when (event) {
                             is ShowSnackBar -> {
-                                Snackbar.make(binding.root, event.message, Snackbar.LENGTH_LONG)
+                                Snackbar.make(binding.root, event.message, Snackbar.LENGTH_SHORT)
                                     .show()
                                 Log.d("ArticleListFragment", "vent collected")
                             }
@@ -89,6 +98,11 @@ class ArticleListFragment : Fragment() {
         }
 
         viewModel.getArticles()
+
+        binding.swipeToRefresh.setOnRefreshListener {
+            viewModel.showSnackBar("Refreshing articles...")
+            viewModel.refreshArticles()
+        }
 
         return binding.root
     }
