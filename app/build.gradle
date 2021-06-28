@@ -91,6 +91,9 @@ dependencies {
     //Navigation component
     implementation "androidx.navigation:navigation-fragment-ktx:$nav_version"
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
+
+    //Browser for custom tabs
+    implementation "androidx.browser:browser:$browser_version"
 }
 
 kapt {
