@@ -7,4 +7,13 @@
     <color name="teal_700">#FF018786</color>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
+
+    <color name="deep_orange_base">#ff7043</color>
+    <color name="deep_orange_base_darker">#f4511e</color>
+
+    <color name="orange_base">#ff9800</color>
+    <color name="orange_base_darker">#f57c00</color>
+
+    <color name="grayish">#80E8E8E8</color>
+    <color name="transparent">#00000000</color>
 </resources>
