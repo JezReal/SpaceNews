@@ -1,4 +1,4 @@
-package io.github.jezreal.spacenews.views
+package io.github.jezreal.spacenews.ui.articlelist
 
 import android.content.Intent
 import android.net.Uri
@@ -13,11 +13,10 @@ import androidx.lifecycle.lifecycleScope
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jezreal.spacenews.databinding.FragmentArticleListBinding
-import io.github.jezreal.spacenews.models.Article
+import io.github.jezreal.spacenews.network.Article
 import io.github.jezreal.spacenews.recyclerview.ArticleAdapter
-import io.github.jezreal.spacenews.viewmodels.ArticleViewModel
-import io.github.jezreal.spacenews.viewmodels.ArticleViewModel.ArticleEvent.ShowSnackBar
-import io.github.jezreal.spacenews.viewmodels.ArticleViewModel.ArticleState.*
+import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleEvent.ShowSnackBar
+import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleState.*
 import kotlinx.coroutines.flow.collect
 
 @AndroidEntryPoint

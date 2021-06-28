@@ -1,4 +1,4 @@
-package io.github.jezreal.spacenews.models
+package io.github.jezreal.spacenews.network
 
 
 import com.squareup.moshi.Json

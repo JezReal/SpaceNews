@@ -7,9 +7,8 @@ import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
-import io.github.jezreal.spacenews.databinding.ArticleItemBinding
 import io.github.jezreal.spacenews.databinding.ArticleItemCardBinding
-import io.github.jezreal.spacenews.models.Article
+import io.github.jezreal.spacenews.network.Article
 
 class ArticleAdapter(private val onclick: (Article) -> Unit) :
     ListAdapter<Article, ArticleAdapter.ViewHolder>(ArticleDiffCallback()) {

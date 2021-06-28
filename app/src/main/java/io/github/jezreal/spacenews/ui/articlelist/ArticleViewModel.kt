@@ -1,11 +1,11 @@
-package io.github.jezreal.spacenews.viewmodels
+package io.github.jezreal.spacenews.ui.articlelist
 
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.asLiveData
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jezreal.spacenews.models.Article
+import io.github.jezreal.spacenews.network.Article
 import io.github.jezreal.spacenews.repository.ArticleRepository
 import io.github.jezreal.spacenews.wrappers.Resource
 import kotlinx.coroutines.Dispatchers

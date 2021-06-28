@@ -1,6 +1,6 @@
 package io.github.jezreal.spacenews.repository
 
-import io.github.jezreal.spacenews.models.Article
+import io.github.jezreal.spacenews.network.Article
 import io.github.jezreal.spacenews.network.SpaceflightNewsApi
 import io.github.jezreal.spacenews.wrappers.Resource
 import java.net.UnknownHostException

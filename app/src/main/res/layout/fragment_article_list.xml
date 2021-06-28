@@ -4,7 +4,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="io.github.jezreal.spacenews.views.ArticleListFragment">
+    tools:context="io.github.jezreal.spacenews.ui.articlelist.ArticleListFragment">
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recycler_view"
