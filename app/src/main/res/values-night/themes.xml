@@ -3,7 +3,7 @@
     <style name="Theme.SpaceNews" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
         <!-- Primary brand color. -->
         <item name="colorPrimary">@color/orange_base</item>
-        <item name="colorPrimaryVariant">@color/orange_base_darker</item>
+        <item name="colorPrimaryVariant">@color/grey</item>
         <item name="colorOnPrimary">@color/black</item>
         <!-- Secondary brand color. -->
         <item name="colorSecondary">@color/teal_200</item>
@@ -13,11 +13,12 @@
         <item name="android:statusBarColor" tools:targetApi="l">?attr/colorPrimaryVariant</item>
         <!-- Customize your theme here. -->
 
-        <item name="colorSurface">@color/orange_base</item>
-        <item name="colorOnSurface">@color/black</item>
+        <item name="colorSurface">@color/dark_grey</item>
+        <item name="colorOnSurface">@color/white</item>
+        <item name="android:windowBackground">@color/darkest_grey</item>
     </style>
 
     <style name="Theme.ArticleCard" parent="Theme.MaterialComponents.DayNight.DarkActionBar">
-        <item name="colorSurface">@color/grayish</item>
+        <item name="colorSurface">@color/blue_grey</item>
     </style>
 </resources>
