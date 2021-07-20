@@ -1,11 +1,8 @@
 package io.github.jezreal.spacenews.network
 
-import androidx.lifecycle.Transformations.map
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 import io.github.jezreal.spacenews.database.DatabaseArticle
-import io.github.jezreal.spacenews.domain.Article
-import retrofit2.Response
 
 @JsonClass(generateAdapter = true)
 data class NetworkArticle(
@@ -21,19 +18,7 @@ data class NetworkArticle(
     val url: String
 )
 
-fun List<NetworkArticle>.toDomainModel(): List<Article> {
-    return map {
-        Article(
-            id = it.id,
-            imageUrl = it.imageUrl,
-            summary = it.summary,
-            title = it.title,
-            url = it.url
-        )
-    }
-}
-
-fun List<NetworkArticle>.toDatabaseModel(): Array<DatabaseArticle> {
+fun List<NetworkArticle>.toDatabaseModel(): List<DatabaseArticle> {
     return map {
         DatabaseArticle(
             id = it.id,
@@ -42,5 +27,5 @@ fun List<NetworkArticle>.toDatabaseModel(): Array<DatabaseArticle> {
             title = it.title,
             url = it.url
         )
-    }.toTypedArray()
+    }
 }
