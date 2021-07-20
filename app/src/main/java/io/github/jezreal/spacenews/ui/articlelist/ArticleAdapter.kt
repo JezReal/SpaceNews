@@ -1,4 +1,4 @@
-package io.github.jezreal.spacenews.recyclerview
+package io.github.jezreal.spacenews.ui.articlelist
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
@@ -8,10 +8,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.bumptech.glide.Glide
 import com.bumptech.glide.load.resource.drawable.DrawableTransitionOptions
 import io.github.jezreal.spacenews.databinding.ArticleItemCardBinding
-import io.github.jezreal.spacenews.network.Article
+import io.github.jezreal.spacenews.network.NetworkArticle
 
-class ArticleAdapter(private val onclick: (Article) -> Unit) :
-    ListAdapter<Article, ArticleAdapter.ViewHolder>(ArticleDiffCallback()) {
+class ArticleAdapter(private val onclick: (NetworkArticle) -> Unit) :
+    ListAdapter<NetworkArticle, ArticleAdapter.ViewHolder>(ArticleDiffCallback()) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ViewHolder {
         return ViewHolder.from(parent)
@@ -26,7 +26,7 @@ class ArticleAdapter(private val onclick: (Article) -> Unit) :
         private val binding: ArticleItemCardBinding,
     ) : RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: Article, onclick: (Article) -> Unit) {
+        fun bind(item: NetworkArticle, onclick: (NetworkArticle) -> Unit) {
             binding.articleTitle.text = item.title
             binding.articleSummary.text = item.summary
             Glide.with(binding.root)
@@ -51,8 +51,8 @@ class ArticleAdapter(private val onclick: (Article) -> Unit) :
     }
 }
 
-class ArticleDiffCallback : DiffUtil.ItemCallback<Article>() {
-    override fun areItemsTheSame(oldItem: Article, newItem: Article) = oldItem.id == newItem.id
+class ArticleDiffCallback : DiffUtil.ItemCallback<NetworkArticle>() {
+    override fun areItemsTheSame(oldItem: NetworkArticle, newItem: NetworkArticle) = oldItem.id == newItem.id
 
-    override fun areContentsTheSame(oldItem: Article, newItem: Article) = oldItem == newItem
+    override fun areContentsTheSame(oldItem: NetworkArticle, newItem: NetworkArticle) = oldItem == newItem
 }

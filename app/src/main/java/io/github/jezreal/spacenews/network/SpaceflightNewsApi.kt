@@ -6,7 +6,7 @@ import retrofit2.http.GET
 interface SpaceflightNewsApi {
 
     @GET("api/v2/articles/")
-    suspend fun getArticleList(): Response<List<Article>>
+    suspend fun getArticleList(): Response<List<NetworkArticle>>
 
     companion object {
         const val BASE_URL = "https://spaceflightnewsapi.net/"

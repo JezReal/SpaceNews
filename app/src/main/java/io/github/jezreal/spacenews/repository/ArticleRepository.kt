@@ -1,6 +1,6 @@
 package io.github.jezreal.spacenews.repository
 
-import io.github.jezreal.spacenews.network.Article
+import io.github.jezreal.spacenews.network.NetworkArticle
 import io.github.jezreal.spacenews.network.SpaceflightNewsApi
 import io.github.jezreal.spacenews.wrappers.Resource
 import java.net.UnknownHostException
@@ -10,7 +10,7 @@ class ArticleRepository @Inject constructor(
     private val api: SpaceflightNewsApi
 ) {
 
-    suspend fun getArticleList(): Resource<List<Article>> {
+    suspend fun getArticleList(): Resource<List<NetworkArticle>> {
         return try {
             val response = api.getArticleList()
             val result = response.body()

@@ -15,8 +15,7 @@ import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jezreal.spacenews.databinding.FragmentArticleListBinding
-import io.github.jezreal.spacenews.network.Article
-import io.github.jezreal.spacenews.recyclerview.ArticleAdapter
+import io.github.jezreal.spacenews.network.NetworkArticle
 import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleEvent.ShowSnackBar
 import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleState.*
 import kotlinx.coroutines.flow.collect
