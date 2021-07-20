@@ -3,7 +3,10 @@ package io.github.jezreal.spacenews.ui.articlelist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
+import io.github.jezreal.spacenews.database.toDomainModel
+import io.github.jezreal.spacenews.domain.Article
 import io.github.jezreal.spacenews.network.NetworkArticle
+import io.github.jezreal.spacenews.network.toDatabaseModel
 import io.github.jezreal.spacenews.repository.ArticleRepository
 import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleEvent.ShowSnackBar
 import io.github.jezreal.spacenews.wrappers.Resource
@@ -11,6 +14,7 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -27,19 +31,10 @@ class ArticleViewModel @Inject constructor(
     private val _articleEvent = Channel<ArticleEvent>()
     val articleEvent = _articleEvent.receiveAsFlow()
 
-    fun getArticles() {
-        _articleList.value = ArticleState.Loading
+    val articles = repository.articles
 
-        viewModelScope.launch(Dispatchers.Default) {
-            when (val articleResponse = repository.getArticleList()) {
-                is Resource.Success -> {
-                    _articleList.value = ArticleState.Success(articleResponse.data!!)
-                }
-                is Resource.Error -> {
-                    _articleList.value = ArticleState.Error(articleResponse.message!!)
-                }
-            }
-        }
+    fun getArticles() {
+        getArticlesFromNetwork()
     }
 
     fun refreshArticles() {
@@ -48,13 +43,35 @@ class ArticleViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Default) {
             when (val articleResponse = repository.getArticleList()) {
                 is Resource.Success -> {
-                    _articleList.value = ArticleState.Success(articleResponse.data!!)
+                    _articleList.value = ArticleState.Success
                 }
                 is Resource.Error -> {
                     _articleList.value = ArticleState.Error(articleResponse.message!!)
                 }
             }
         }
+    }
+
+    private fun getArticlesFromNetwork() {
+        _articleList.value = ArticleState.Loading
+
+        viewModelScope.launch(Dispatchers.Default) {
+            when (val articleResponse = repository.getArticleList()) {
+                is Resource.Success -> {
+                    insertArticlesToDatabase(articleResponse.data!!)
+                }
+                is Resource.Error -> {
+                    _articleList.value = ArticleState.Error(articleResponse.message!!)
+                }
+            }
+        }
+    }
+
+    private fun insertArticlesToDatabase(articles: List<NetworkArticle>) {
+        viewModelScope.launch(Dispatchers.IO) {
+            repository.insertArticlesToDatabase(articles)
+        }
+        _articleList.value = ArticleState.Success
     }
 
     fun showSnackBar(message: String) {
@@ -68,7 +85,7 @@ class ArticleViewModel @Inject constructor(
         object Empty : ArticleState()
         object Loading : ArticleState()
         object Refresh : ArticleState()
-        class Success(val articles: List<NetworkArticle>) : ArticleState()
+        object Success : ArticleState()
         class Error(val message: String) : ArticleState()
     }
 

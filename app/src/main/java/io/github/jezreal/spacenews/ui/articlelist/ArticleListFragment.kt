@@ -14,8 +14,9 @@ import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import io.github.jezreal.spacenews.database.toDomainModel
 import io.github.jezreal.spacenews.databinding.FragmentArticleListBinding
-import io.github.jezreal.spacenews.network.NetworkArticle
+import io.github.jezreal.spacenews.domain.Article
 import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleEvent.ShowSnackBar
 import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleState.*
 import kotlinx.coroutines.flow.collect
@@ -38,6 +39,9 @@ class ArticleListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
+                    collectArticles()
+                }
+                launch {
                     collectState()
                 }
                 launch {
@@ -49,14 +53,15 @@ class ArticleListFragment : Fragment() {
         viewModel.getArticles()
 
         binding.swipeToRefresh.setOnRefreshListener {
-            viewModel.showSnackBar("Refreshing articles...")
-            viewModel.refreshArticles()
+            viewModel.showSnackBar("Refresh is broken (for now)")
+//            viewModel.refreshArticles()
+            binding.swipeToRefresh.isRefreshing = false
         }
 
         return binding.root
     }
 
-    private fun adapterOnClick(article: NetworkArticle) {
+    private fun adapterOnClick(article: Article) {
         val builder = CustomTabsIntent.Builder()
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(requireActivity(), Uri.parse(article.url))
@@ -81,23 +86,15 @@ class ArticleListFragment : Fragment() {
                     binding.errorMessage.visibility = View.GONE
                 }
 
-                is Success -> {
-                    binding.loading.visibility = View.GONE
-                    binding.recyclerView.visibility = View.VISIBLE
-                    adapter = ArticleAdapter { article ->
-                        adapterOnClick(article)
-                    }
-                    binding.recyclerView.adapter = adapter
-                    adapter.submitList(state.articles)
-
-                    binding.swipeToRefresh.isRefreshing = false
-                }
-
                 is Error -> {
                     binding.loading.visibility = View.GONE
                     viewModel.showSnackBar(state.message)
 
                     binding.swipeToRefresh.isRefreshing = false
+                }
+
+                else -> {
+
                 }
             }
         }
@@ -107,10 +104,28 @@ class ArticleListFragment : Fragment() {
         viewModel.articleEvent.collect { event ->
             when (event) {
                 is ShowSnackBar -> {
-                    Snackbar.make(binding.root, event.message, Snackbar.LENGTH_SHORT)
-                        .show()
-                    Log.d("ArticleListFragment", "vent collected")
+                    Snackbar.make(binding.root, event.message, Snackbar.LENGTH_SHORT).show()
                 }
+            }
+        }
+    }
+
+    private suspend fun collectArticles() {
+        // TODO: load articles from network first before showing cached data
+        viewModel.articles.collect { articles ->
+            if (articles.isEmpty()) {
+                binding.loading.visibility = View.GONE
+                viewModel.showSnackBar("Empty articles")
+            } else {
+                binding.loading.visibility = View.GONE
+                binding.recyclerView.visibility = View.VISIBLE
+                adapter = ArticleAdapter { article ->
+                    adapterOnClick(article)
+                }
+                binding.recyclerView.adapter = adapter
+                adapter.submitList(articles.toDomainModel())
+
+                binding.swipeToRefresh.isRefreshing = false
             }
         }
     }
