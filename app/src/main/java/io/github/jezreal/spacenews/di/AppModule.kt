@@ -49,6 +49,6 @@ object AppModule {
 
     @Singleton
     @Provides
-    fun provideArticleRepository(api: SpaceflightNewsApi): ArticleRepository =
-        ArticleRepository(api)
+    fun provideArticleRepository(api: SpaceflightNewsApi, database: ArticleDatabase): ArticleRepository =
+        ArticleRepository(api, database)
 }
