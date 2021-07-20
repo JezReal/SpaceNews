@@ -37,62 +37,12 @@ class ArticleListFragment : Fragment() {
 
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-
-                //listen for state changes
                 launch {
-                    viewModel.articleList.collect { state ->
-                        when (state) {
-                            is Empty -> {
-                                binding.recyclerView.visibility = View.GONE
-                                binding.errorMessage.visibility = View.GONE
-                                binding.loading.visibility = View.GONE
-                            }
-
-                            is Loading -> {
-                                binding.loading.visibility = View.VISIBLE
-                            }
-
-                            is Refresh -> {
-                                binding.recyclerView.visibility = View.VISIBLE
-                                binding.loading.visibility = View.GONE
-                                binding.errorMessage.visibility = View.GONE
-                            }
-
-                            is Success -> {
-                                binding.loading.visibility = View.GONE
-                                binding.recyclerView.visibility = View.VISIBLE
-                                adapter = ArticleAdapter { article ->
-                                    adapterOnClick(article)
-                                }
-                                binding.recyclerView.adapter = adapter
-                                adapter.submitList(state.articles)
-
-                                binding.swipeToRefresh.isRefreshing = false
-                            }
-
-                            is Error -> {
-                                binding.loading.visibility = View.GONE
-                                viewModel.showSnackBar(state.message)
-
-                                binding.swipeToRefresh.isRefreshing = false
-                            }
-                        }
-                    }
+                    collectState()
                 }
-
-                //listen for events
                 launch {
-                    viewModel.articleEvent.collect { event ->
-                        when (event) {
-                            is ShowSnackBar -> {
-                                Snackbar.make(binding.root, event.message, Snackbar.LENGTH_SHORT)
-                                    .show()
-                                Log.d("ArticleListFragment", "vent collected")
-                            }
-                        }
-                    }
+                    collectEvents()
                 }
-
             }
         }
 
@@ -106,10 +56,63 @@ class ArticleListFragment : Fragment() {
         return binding.root
     }
 
-    private fun adapterOnClick(article: Article) {
+    private fun adapterOnClick(article: NetworkArticle) {
         val builder = CustomTabsIntent.Builder()
         val customTabsIntent = builder.build()
         customTabsIntent.launchUrl(requireActivity(), Uri.parse(article.url))
+    }
+
+    private suspend fun collectState() {
+        viewModel.articleList.collect { state ->
+            when (state) {
+                is Empty -> {
+                    binding.recyclerView.visibility = View.GONE
+                    binding.errorMessage.visibility = View.GONE
+                    binding.loading.visibility = View.GONE
+                }
+
+                is Loading -> {
+                    binding.loading.visibility = View.VISIBLE
+                }
+
+                is Refresh -> {
+                    binding.recyclerView.visibility = View.VISIBLE
+                    binding.loading.visibility = View.GONE
+                    binding.errorMessage.visibility = View.GONE
+                }
+
+                is Success -> {
+                    binding.loading.visibility = View.GONE
+                    binding.recyclerView.visibility = View.VISIBLE
+                    adapter = ArticleAdapter { article ->
+                        adapterOnClick(article)
+                    }
+                    binding.recyclerView.adapter = adapter
+                    adapter.submitList(state.articles)
+
+                    binding.swipeToRefresh.isRefreshing = false
+                }
+
+                is Error -> {
+                    binding.loading.visibility = View.GONE
+                    viewModel.showSnackBar(state.message)
+
+                    binding.swipeToRefresh.isRefreshing = false
+                }
+            }
+        }
+    }
+
+    private suspend fun collectEvents() {
+        viewModel.articleEvent.collect { event ->
+            when (event) {
+                is ShowSnackBar -> {
+                    Snackbar.make(binding.root, event.message, Snackbar.LENGTH_SHORT)
+                        .show()
+                    Log.d("ArticleListFragment", "vent collected")
+                }
+            }
+        }
     }
 
 }
