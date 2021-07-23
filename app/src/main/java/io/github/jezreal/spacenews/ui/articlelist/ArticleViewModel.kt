@@ -3,10 +3,7 @@ package io.github.jezreal.spacenews.ui.articlelist
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import dagger.hilt.android.lifecycle.HiltViewModel
-import io.github.jezreal.spacenews.database.toDomainModel
-import io.github.jezreal.spacenews.domain.Article
 import io.github.jezreal.spacenews.network.NetworkArticle
-import io.github.jezreal.spacenews.network.toDatabaseModel
 import io.github.jezreal.spacenews.repository.ArticleRepository
 import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleEvent.ShowSnackBar
 import io.github.jezreal.spacenews.wrappers.Resource
@@ -14,7 +11,6 @@ import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.collect
 import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -74,9 +70,9 @@ class ArticleViewModel @Inject constructor(
         _articleList.value = ArticleState.Success
     }
 
-    fun showSnackBar(message: String) {
+    fun showSnackBar(message: String, length: Int) {
         viewModelScope.launch {
-            _articleEvent.send(ShowSnackBar(message))
+            _articleEvent.send(ShowSnackBar(message, length))
         }
     }
 
@@ -90,7 +86,7 @@ class ArticleViewModel @Inject constructor(
     }
 
     sealed class ArticleEvent {
-        class ShowSnackBar(val message: String) : ArticleEvent()
+        class ShowSnackBar(val message: String, val length: Int) : ArticleEvent()
     }
 
 }
