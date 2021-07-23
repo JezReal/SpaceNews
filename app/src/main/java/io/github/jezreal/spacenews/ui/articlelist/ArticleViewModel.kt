@@ -39,7 +39,7 @@ class ArticleViewModel @Inject constructor(
         viewModelScope.launch(Dispatchers.Default) {
             when (val articleResponse = repository.getArticleList()) {
                 is Resource.Success -> {
-                    _articleList.value = ArticleState.Success
+                    insertArticlesToDatabase(articleResponse.data!!)
                 }
                 is Resource.Error -> {
                     _articleList.value = ArticleState.Error(articleResponse.message!!)

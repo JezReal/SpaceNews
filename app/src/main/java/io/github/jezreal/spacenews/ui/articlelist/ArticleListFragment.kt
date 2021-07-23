@@ -59,9 +59,8 @@ class ArticleListFragment : Fragment() {
         }
 
         binding.swipeToRefresh.setOnRefreshListener {
-            viewModel.showSnackBar("Refresh is broken (for now)", Snackbar.LENGTH_SHORT)
-//            viewModel.refreshArticles()
-            binding.swipeToRefresh.isRefreshing = false
+            viewModel.showSnackBar("Refreshing articles", Snackbar.LENGTH_SHORT)
+            viewModel.refreshArticles()
         }
 
         return binding.root
@@ -99,10 +98,12 @@ class ArticleListFragment : Fragment() {
                         "${state.message}, showing cached articles",
                         Snackbar.LENGTH_LONG
                     )
+                    binding.swipeToRefresh.isRefreshing = false
                     showArticles()
                 }
 
                 is Success -> {
+                    binding.swipeToRefresh.isRefreshing = false
                     showArticles()
                 }
             }
