@@ -65,6 +65,7 @@ class ArticleViewModel @Inject constructor(
 
     private fun insertArticlesToDatabase(articles: List<NetworkArticle>) {
         viewModelScope.launch(Dispatchers.IO) {
+            repository.deleteAllCachedArticles()
             repository.insertArticlesToDatabase(articles)
         }
         _articleList.value = ArticleState.Success

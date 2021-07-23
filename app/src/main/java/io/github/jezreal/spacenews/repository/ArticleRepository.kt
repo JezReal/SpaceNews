@@ -36,7 +36,10 @@ class ArticleRepository @Inject constructor(
     }
 
     suspend fun insertArticlesToDatabase(articles: List<NetworkArticle>) {
-        database.articleDao.deleteAll()
         database.articleDao.insertArticles(articles.toDatabaseModel())
+    }
+
+    suspend fun deleteAllCachedArticles() {
+        database.articleDao.deleteAll()
     }
 }
