@@ -11,6 +11,7 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
+import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jezreal.spacenews.database.toDomainModel
@@ -27,7 +28,7 @@ class ArticleListFragment : Fragment() {
     private lateinit var binding: FragmentArticleListBinding
     private val viewModel: ArticleViewModel by viewModels()
     private lateinit var adapter: ArticleAdapter
-    private lateinit var cachedArticles: List<Article>
+    private var cachedArticles: List<Article> = emptyList()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -46,14 +47,6 @@ class ArticleListFragment : Fragment() {
                 }
                 launch {
                     collectEvents()
-                }
-            }
-        }
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            lifecycle.repeatOnLifecycle(Lifecycle.State.CREATED) {
-                viewModel.articles.collect { articles ->
-                    cachedArticles = articles.toDomainModel()
                 }
             }
         }
@@ -132,8 +125,10 @@ class ArticleListFragment : Fragment() {
         adapter = ArticleAdapter { article ->
             adapterOnClick(article)
         }
+
         binding.recyclerView.adapter = adapter
         adapter.submitList(cachedArticles)
+        adapter.stateRestorationPolicy = PREVENT_WHEN_EMPTY
 
         binding.swipeToRefresh.isRefreshing = false
     }
