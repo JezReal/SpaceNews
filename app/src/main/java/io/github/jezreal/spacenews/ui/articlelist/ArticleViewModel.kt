@@ -8,10 +8,10 @@ import io.github.jezreal.spacenews.repository.ArticleRepository
 import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleEvent.ShowSnackBar
 import io.github.jezreal.spacenews.wrappers.Resource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.receiveAsFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -24,8 +24,8 @@ class ArticleViewModel @Inject constructor(
     private val _articleList = MutableStateFlow<ArticleState>(ArticleState.Empty)
     val articleList: Flow<ArticleState> = _articleList
 
-    private val _articleEvent = Channel<ArticleEvent>()
-    val articleEvent = _articleEvent.receiveAsFlow()
+    private val _articleEvent = MutableSharedFlow<ArticleEvent>()
+    val articleEvent = _articleEvent.asSharedFlow()
 
     val articles = repository.articles
 
@@ -73,7 +73,7 @@ class ArticleViewModel @Inject constructor(
 
     fun showSnackBar(message: String, length: Int) {
         viewModelScope.launch {
-            _articleEvent.send(ShowSnackBar(message, length))
+            _articleEvent.emit(ShowSnackBar(message, length))
         }
     }
 
