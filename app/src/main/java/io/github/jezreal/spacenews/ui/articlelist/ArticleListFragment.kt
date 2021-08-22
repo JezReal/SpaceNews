@@ -11,7 +11,6 @@ import androidx.fragment.app.viewModels
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.lifecycleScope
 import androidx.lifecycle.repeatOnLifecycle
-import androidx.recyclerview.widget.RecyclerView.Adapter.StateRestorationPolicy.PREVENT_WHEN_EMPTY
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
 import io.github.jezreal.spacenews.database.toDomainModel
@@ -112,21 +111,23 @@ class ArticleListFragment : Fragment() {
     private suspend fun collectArticles() {
         viewModel.articles.collect { articles ->
             cachedArticles = articles.toDomainModel()
+            adapter = ArticleAdapter { article ->
+                adapterOnClick(article)
+            }
+
+            binding.recyclerView.adapter = adapter
+            adapter.submitList(cachedArticles)
         }
     }
 
     private fun showArticles() {
         binding.loading.visibility = View.GONE
         binding.recyclerView.visibility = View.VISIBLE
-        adapter = ArticleAdapter { article ->
-            adapterOnClick(article)
-        }
 
-        binding.recyclerView.adapter = adapter
-        adapter.submitList(cachedArticles)
-        adapter.stateRestorationPolicy = PREVENT_WHEN_EMPTY
+        if (cachedArticles.isEmpty()) {
+            viewModel.getArticles()
+        }
 
         binding.swipeToRefresh.isRefreshing = false
     }
-
 }
