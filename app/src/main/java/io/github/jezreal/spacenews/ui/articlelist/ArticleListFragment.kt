@@ -37,26 +37,9 @@ class ArticleListFragment : Fragment() {
         binding = FragmentArticleListBinding.inflate(inflater, container, false)
 
         setRecyclerViewAdapter()
-
-        viewLifecycleOwner.lifecycleScope.launch {
-            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
-                launch {
-                    collectArticles()
-                }
-                launch {
-                    collectState()
-                }
-                launch {
-                    collectEvents()
-                }
-            }
-        }
-
-        binding.swipeToRefresh.setOnRefreshListener {
-            viewModel.showSnackBar("Refreshing articles", Snackbar.LENGTH_SHORT)
-            viewModel.refreshArticles()
-        }
-
+        collectFlows()
+        setListeners()
+        
         return binding.root
     }
 
@@ -134,5 +117,28 @@ class ArticleListFragment : Fragment() {
             adapterOnClick(article)
         }
         binding.recyclerView.adapter = adapter
+    }
+
+    private fun collectFlows() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    collectArticles()
+                }
+                launch {
+                    collectState()
+                }
+                launch {
+                    collectEvents()
+                }
+            }
+        }
+    }
+
+    private fun setListeners() {
+        binding.swipeToRefresh.setOnRefreshListener {
+            viewModel.showSnackBar("Refreshing articles", Snackbar.LENGTH_SHORT)
+            viewModel.refreshArticles()
+        }
     }
 }
