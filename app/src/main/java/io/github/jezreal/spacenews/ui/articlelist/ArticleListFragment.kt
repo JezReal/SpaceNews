@@ -39,7 +39,7 @@ class ArticleListFragment : Fragment() {
         setRecyclerViewAdapter()
         collectFlows()
         setListeners()
-        
+
         return binding.root
     }
 
