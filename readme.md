@@ -16,8 +16,3 @@ The libraries that I used are:
 - Retrofit + Moshi
 - Glide
 
-## Upcoming features
-
-- More spaceflight news(blogs and reports)
-- Ability to save your favorite articles for later reading
-- And more! (hopefully)
