@@ -2,6 +2,7 @@ package io.github.jezreal.spacenews.ui.articlelist
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jezreal.spacenews.network.NetworkArticle
 import io.github.jezreal.spacenews.repository.ArticleRepository
@@ -42,7 +43,13 @@ class ArticleViewModel @Inject constructor(
                     insertArticlesToDatabase(articleResponse.data!!)
                 }
                 is Resource.Error -> {
-                    _articleList.value = ArticleState.Error(articleResponse.message!!)
+                    _articleList.value = ArticleState.Error
+                    _articleEvent.emit(
+                        ShowSnackBar(
+                            articleResponse.message!!,
+                            Snackbar.LENGTH_SHORT
+                        )
+                    )
                 }
             }
         }
@@ -57,7 +64,13 @@ class ArticleViewModel @Inject constructor(
                     insertArticlesToDatabase(articleResponse.data!!)
                 }
                 is Resource.Error -> {
-                    _articleList.value = ArticleState.Error(articleResponse.message!!)
+                    _articleList.value = ArticleState.Error
+                    _articleEvent.emit(
+                        ShowSnackBar(
+                            articleResponse.message!!,
+                            Snackbar.LENGTH_SHORT
+                        )
+                    )
                 }
             }
         }
@@ -83,7 +96,7 @@ class ArticleViewModel @Inject constructor(
         object Loading : ArticleState()
         object Refresh : ArticleState()
         object Success : ArticleState()
-        class Error(val message: String) : ArticleState()
+        object Error : ArticleState()
     }
 
     sealed class ArticleEvent {

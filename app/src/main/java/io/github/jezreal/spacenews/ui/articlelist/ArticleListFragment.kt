@@ -87,10 +87,6 @@ class ArticleListFragment : Fragment() {
                 }
 
                 is Error -> {
-                    viewModel.showSnackBar(
-                        "${state.message}, showing cached articles",
-                        Snackbar.LENGTH_LONG
-                    )
                     binding.swipeToRefresh.isRefreshing = false
                     showArticles()
                 }
