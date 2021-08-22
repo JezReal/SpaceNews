@@ -36,6 +36,8 @@ class ArticleListFragment : Fragment() {
     ): View {
         binding = FragmentArticleListBinding.inflate(inflater, container, false)
 
+        setRecyclerViewAdapter()
+
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
@@ -111,11 +113,7 @@ class ArticleListFragment : Fragment() {
     private suspend fun collectArticles() {
         viewModel.articles.collect { articles ->
             cachedArticles = articles.toDomainModel()
-            adapter = ArticleAdapter { article ->
-                adapterOnClick(article)
-            }
 
-            binding.recyclerView.adapter = adapter
             adapter.submitList(cachedArticles)
         }
     }
@@ -129,5 +127,12 @@ class ArticleListFragment : Fragment() {
         }
 
         binding.swipeToRefresh.isRefreshing = false
+    }
+
+    private fun setRecyclerViewAdapter() {
+        adapter = ArticleAdapter { article ->
+            adapterOnClick(article)
+        }
+        binding.recyclerView.adapter = adapter
     }
 }
