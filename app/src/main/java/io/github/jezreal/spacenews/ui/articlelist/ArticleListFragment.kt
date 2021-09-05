@@ -107,8 +107,10 @@ class ArticleListFragment : Fragment() {
         binding.recyclerView.visibility = View.VISIBLE
 
         if (cachedArticles.isEmpty()) {
-            viewModel.getArticles()
+            //TODO: display empty list message
         }
+
+        adapter.submitList(cachedArticles)
 
         binding.swipeToRefresh.isRefreshing = false
     }
