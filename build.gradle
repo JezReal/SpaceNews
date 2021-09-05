@@ -1,7 +1,7 @@
 // Top-level build file where you can add configuration options common to all sub-projects/modules.
 buildscript {
     ext {
-        kotlin_version = "1.5.21"
+        kotlin_version = "1.5.30"
         recyclerview_version = '1.2.1'
         navigation_version = '2.3.5'
         lifecycle_version = '2.4.0-alpha02'
