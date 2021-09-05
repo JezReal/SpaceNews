@@ -1,6 +1,6 @@
 # SpaceNews
 
-SpaceNews is an Android app the you can use to easily read about the latest events about space and spaceflight.
+SpaceNews is an Android app you can use to easily read about the latest events about space and spaceflight.
 Built using the [Spaceflight News API](https://spaceflightnewsapi.net).
 
 
