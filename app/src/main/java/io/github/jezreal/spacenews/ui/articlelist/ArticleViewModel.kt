@@ -1,7 +1,6 @@
 package io.github.jezreal.spacenews.ui.articlelist
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.github.jezreal.spacenews.network.NetworkArticle
@@ -9,9 +8,7 @@ import io.github.jezreal.spacenews.repository.ArticleRepository
 import io.github.jezreal.spacenews.ui.articlelist.ArticleViewModel.ArticleEvent.ShowSnackBar
 import io.github.jezreal.spacenews.wrappers.Resource
 import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableSharedFlow
-import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
@@ -21,14 +18,13 @@ import javax.inject.Inject
 class ArticleViewModel @Inject constructor(
     private val repository: ArticleRepository
 ) : ViewModel() {
-
-    private val _articleList = MutableStateFlow<ArticleState>(ArticleState.Empty)
-    val articleList: Flow<ArticleState> = _articleList
+    private val _articleList = MutableLiveData<ArticleState>(ArticleState.Empty)
+    val articleList: LiveData<ArticleState> = _articleList
 
     private val _articleEvent = MutableSharedFlow<ArticleEvent>()
     val articleEvent = _articleEvent.asSharedFlow()
 
-    val articles = repository.articles
+    val articles = repository.articles.asLiveData()
 
     fun getArticles() {
         getArticlesFromNetwork()
@@ -64,7 +60,7 @@ class ArticleViewModel @Inject constructor(
                     insertArticlesToDatabase(articleResponse.data!!)
                 }
                 is Resource.Error -> {
-                    _articleList.value = ArticleState.Error
+                    _articleList.postValue(ArticleState.Error)
                     _articleEvent.emit(
                         ShowSnackBar(
                             articleResponse.message!!,
@@ -81,7 +77,7 @@ class ArticleViewModel @Inject constructor(
             repository.deleteAllCachedArticles()
             repository.insertArticlesToDatabase(articles)
         }
-        _articleList.value = ArticleState.Success
+        _articleList.postValue(ArticleState.Success)
     }
 
     fun showSnackBar(message: String, length: Int) {

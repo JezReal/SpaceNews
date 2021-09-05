@@ -37,6 +37,7 @@ class ArticleListFragment : Fragment() {
         binding = FragmentArticleListBinding.inflate(inflater, container, false)
 
         setRecyclerViewAdapter()
+        observeLiveData()
         collectFlows()
         setListeners()
 
@@ -49,8 +50,8 @@ class ArticleListFragment : Fragment() {
         customTabsIntent.launchUrl(requireActivity(), Uri.parse(article.url))
     }
 
-    private suspend fun collectState() {
-        viewModel.articleList.collect { state ->
+    private fun observeState() {
+        viewModel.articleList.observe(viewLifecycleOwner) { state ->
             when (state) {
                 is Empty -> {
                     binding.recyclerView.visibility = View.GONE
@@ -93,8 +94,8 @@ class ArticleListFragment : Fragment() {
         }
     }
 
-    private suspend fun collectArticles() {
-        viewModel.articles.collect { articles ->
+    private fun observeArticles() {
+        viewModel.articles.observe(viewLifecycleOwner) { articles ->
             cachedArticles = articles.toDomainModel()
 
             adapter.submitList(cachedArticles)
@@ -123,12 +124,6 @@ class ArticleListFragment : Fragment() {
         viewLifecycleOwner.lifecycleScope.launch {
             viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
                 launch {
-                    collectArticles()
-                }
-                launch {
-                    collectState()
-                }
-                launch {
                     collectEvents()
                 }
             }
@@ -140,5 +135,10 @@ class ArticleListFragment : Fragment() {
             viewModel.showSnackBar("Refreshing articles", Snackbar.LENGTH_SHORT)
             viewModel.refreshArticles()
         }
+    }
+
+    private fun observeLiveData() {
+        observeState()
+        observeArticles()
     }
 }
